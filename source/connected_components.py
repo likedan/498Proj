@@ -19,7 +19,7 @@ def findCommunities(filename):
 
 if __name__ == '__main__':
   if len(sys.argv) < 2:
-    print "Expected list of ego networks, e.g. 'python connected_components.py *.egonet'"
+    print "Expected list of ego networks, e.g. 'python link_clustering.py *.egonet'"
     sys.exit(0)
   print "UserId,Predicted"
   for arg in sys.argv[1:]:

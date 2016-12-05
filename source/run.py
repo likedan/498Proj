@@ -6,6 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import Ridge
 from userData import Persons
 from kmeans import KMeans
+from evaluation import *
 
 import similarityCalculator
 import argparse
@@ -168,8 +169,6 @@ def k_means_clustering(data, featureWeightMap):
 
     return attribute_clusters, attribute_and_friendship_clusters, weighted_attribute_and_friendship_clusters
 
-
-
 def _convert_kmeans_format(clusters):
     clusters_formatted = {}
     for original_person in clusters:
@@ -178,6 +177,22 @@ def _convert_kmeans_format(clusters):
             circles.append( clusters[original_person][centroid] )
         clusters_formatted[original_person] = circles
     return clusters_formatted
+
+def evaluate(result):
+    print result
+    result = dict(result)
+    print result
+    for (person, data) in result.iteritems():
+        person_network = []
+        file_name = "training/" + person + ".circles"
+        with open(file_name) as f:
+            for line in f:
+                result = line.replace("\n", "")
+                result_arr = result.split(" ")
+                person_network.append(result_arr[1:])
+        evaluate_obj = Evaluation(person_network, data)
+        print person
+        print evaluate_obj.get_score()
 
 if __name__ == '__main__':
 
@@ -228,7 +243,8 @@ if __name__ == '__main__':
     kmeans_kaggle_weighted_attrs_friends = 'kmeans_kaggle_weighted_attrs_friends.csv'
 
     writeSubmission(real_training_data, data.trainingMap)
-    #print(attribute_clusters['239'])
+    evaluate(data.trainingMap)
+
     # Validation tests
     writeSubmission(kmeans_attrs, {k:attribute_clusters[k] for k in data.trainingMap})
     writeSubmission(kmeans_attrs_friends, {k:attribute_and_friendship_clusters[k] for k in data.trainingMap})
@@ -243,7 +259,8 @@ if __name__ == '__main__':
     writeSubmission(kmeans_kaggle_weighted_attrs_friends,
             {k:weighted_attribute_and_friendship_clusters[k] for k in
                 data.originalPeople if k not in data.trainingMap})
-    
+
+
     printMetricCommand(real_training_data, kmeans_attrs)
     printMetricCommand(real_training_data, kmeans_attrs_friends)
     printMetricCommand(real_training_data, kmeans_weighted_attrs_friends)

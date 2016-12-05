@@ -9,7 +9,7 @@ class Evaluation:
             if b in self.dic[a]:
                 return self.dic[a][b]
         anb = a.intersection(b)
-        res = len(anb) / (len(a) + len(b) - len(anb))
+        res = float(len(anb)) / float(len(a) + len(b) - len(anb))
         if a not in self.dic:
             self.dic[a] = {}
         if b not in self.dic:
@@ -20,7 +20,7 @@ class Evaluation:
 
     def get_score(self):
         detected = [frozenset([j for j in x]) for x in self.circle_list_detected]
-        truth = [frozenset([j for j in x]) for x in self.network.circle_list]
+        truth = [frozenset([j for j in x]) for x in self.network]
 
         first = 0
         for d in detected:
@@ -28,7 +28,7 @@ class Evaluation:
             for t in truth:
                 cur = max(cur, self.get_jaccard(d, t))
             first += cur
-        first = 1.0 / (2.0 * len(detected)) * first
+        first = 1.0 / float(2.0 * len(detected)) * first
 
         second = 0
         for t in truth:
@@ -36,7 +36,7 @@ class Evaluation:
             for d in detected:
                 cur = max(cur, self.get_jaccard(t, d))
             second += cur
-        second = 1.0 / (2.0 * len(truth)) * second
+        second = 1.0 / float(2.0 * len(truth)) * second
 
         res = first + second
         return res

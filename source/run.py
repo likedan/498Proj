@@ -1,49 +1,35 @@
-from userData import Persons
 from kmeans import KMeans
 from evaluation import *
 from dataStructure import *
-
+from math import sqrt
 import similarityCalculator
 
-def writeSubmission(filename, circleMap, test=False):
-    f = open(filename, 'w+')
-
-    f.write('UserId,Predicted\n')
-
-    for person, circles in circleMap.iteritems():
-
-        line = person + ','
-
-        if not test:
-            for i in range(len(circles)):#circle in circles:
-                for j in range(len(circles[i])):#friend in circles[i]:
-                    line += circles[i][j]
-                    if j != len(circles[i]) - 1:
-                        line += ' '
-                if i != len(circles) - 1:
-                    line += ';'
-        else:
-            for friend in circles:
-                line += friend + ' '
-            line += ';'
-
-        line += '\n'
-        f.write(line)
-
-    f.close()
-
-def _compute_k_means_clusters(data, similarity_calculator, similarity_diff_threshold):
-    computed_clusters = {}
-    k_means = KMeans(data.persons, similarity_calculator)
-    for personID in data.originalPeople:
-        friends_of_person = data.persons.getPerson(personID).getFriends()
-        if len(friends_of_person) > 250:
-            k = 12
-        else:
-            k = 6
-        clusters = k_means.computeClusters(friends_of_person, k, similarity_diff_threshold)
-        computed_clusters[personID] = clusters
-    return computed_clusters
+# def writeSubmission(filename, circleMap, test=False):
+#     f = open(filename, 'w+')
+#
+#     f.write('UserId,Predicted\n')
+#
+#     for person, circles in circleMap.iteritems():
+#
+#         line = person + ','
+#
+#         if not test:
+#             for i in range(len(circles)):#circle in circles:
+#                 for j in range(len(circles[i])):#friend in circles[i]:
+#                     line += circles[i][j]
+#                     if j != len(circles[i]) - 1:
+#                         line += ' '
+#                 if i != len(circles) - 1:
+#                     line += ';'
+#         else:
+#             for friend in circles:
+#                 line += friend + ' '
+#             line += ';'
+#
+#         line += '\n'
+#         f.write(line)
+#
+#     f.close()
 
 def _convert_kmeans_format(clusters):
     clusters_formatted = {}
@@ -76,15 +62,22 @@ if __name__ == '__main__':
 
     # List of people to calculate training data for.
     trainingPeople = []
-    for key in data.trainingMap:
+    for key in data.trainingDict:
         trainingPeople.append(key)
 
     SimilarityCalc = similarityCalculator.SimilarityCalculator(len(data.featureList))
-    attribute_and_friendship_clusters = _compute_k_means_clusters(data, SimilarityCalc.similarity_weighted_attributes_friendship, 3.5)
+
+    attribute_and_friendship_clusters = {}
+    k_means = KMeans(data.persons, SimilarityCalc.similarity_weighted_attributes_friendship)
+    for personID in data.originalPeople:
+        friends_of_person = data.persons.getPerson(personID).getFriends()
+        k = int(sqrt(len(friends_of_person))) + 1
+        clusters = k_means.computeClusters(friends_of_person, k, 3.5)
+        attribute_and_friendship_clusters[personID] = clusters
 
     attribute_and_friendship_clusters = _convert_kmeans_format(attribute_and_friendship_clusters)
 
-    evaluate({k:attribute_and_friendship_clusters[k] for k in data.trainingMap})
+    evaluate({k:attribute_and_friendship_clusters[k] for k in data.trainingDict})
 
     testingPeople = [origPerson for origPerson in data.originalPeople if origPerson
             not in trainingPeople]

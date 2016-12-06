@@ -3,7 +3,7 @@ class SimilarityCalculator(object):
     def __init__(self, featureCount):
         self.featureCount = featureCount
        
-    def similarity_weighted_attributes_friendship( self, persons, friend1ID, friend2ID ):
+    def similarity_weighted_attributes_friendship(self, persons, friend1ID, friend2ID):
         FRIENDSHIP_WEIGHT = 2.5
         similarity = 0.0
         

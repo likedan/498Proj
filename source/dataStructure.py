@@ -4,17 +4,10 @@ import os
 
 class DataStructure:
     def __init__(self):
-        # Load friend map.
-        self.friendMap, self.originalPeople, self.persons = self.loadEgoNets('egonets')
-
-        # Load features.
-        self.featureMap = self.loadFeatures('features.txt', self.persons)
-
-        # Load feature list
+        self.friendsDict, self.originalPeople, self.persons = self.loadEgoNets('egonets')
+        self.featuresDict = self.loadFeatures('features.txt', self.persons)
         self.featureList = self.loadFeatureList('featureList.txt')
-
-        # Load training data.
-        self.trainingMap = self.loadTrainingData('training')
+        self.trainingDict = self.loadTrainingData('training')
 
     def loadEgoNets(self, directory):
         friendMap = collections.defaultdict(set)

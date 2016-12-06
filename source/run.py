@@ -179,9 +179,8 @@ def _convert_kmeans_format(clusters):
     return clusters_formatted
 
 def evaluate(result):
-    print result
     result = dict(result)
-    print result
+    total = 0.0
     for (person, data) in result.iteritems():
         person_network = []
         file_name = "training/" + person + ".circles"
@@ -191,8 +190,10 @@ def evaluate(result):
                 result_arr = result.split(" ")
                 person_network.append(result_arr[1:])
         evaluate_obj = Evaluation(person_network, data)
-        print person
-        print evaluate_obj.get_score()
+        #print person
+        #print evaluate_obj.get_score()
+        total += evaluate_obj.get_score()
+    print total / float(len(result))
 
 if __name__ == '__main__':
 
@@ -243,23 +244,25 @@ if __name__ == '__main__':
     kmeans_kaggle_weighted_attrs_friends = 'kmeans_kaggle_weighted_attrs_friends.csv'
 
     writeSubmission(real_training_data, data.trainingMap)
-    evaluate(data.trainingMap)
+
 
     # Validation tests
     writeSubmission(kmeans_attrs, {k:attribute_clusters[k] for k in data.trainingMap})
     writeSubmission(kmeans_attrs_friends, {k:attribute_and_friendship_clusters[k] for k in data.trainingMap})
     writeSubmission(kmeans_weighted_attrs_friends, {k:weighted_attribute_and_friendship_clusters[k] for k in data.trainingMap})
-    
     # Kaggle submissions
     writeSubmission(kmeans_kaggle_attrs, {k:attribute_clusters[k] for k in
         data.originalPeople if k not in data.trainingMap})
     writeSubmission(kmeans_kaggle_attrs_friends,
             {k:attribute_and_friendship_clusters[k] for k in
                 data.originalPeople if k not in data.trainingMap})
+
     writeSubmission(kmeans_kaggle_weighted_attrs_friends,
             {k:weighted_attribute_and_friendship_clusters[k] for k in
                 data.originalPeople if k not in data.trainingMap})
-
+    evaluate({k:attribute_clusters[k] for k in data.trainingMap})
+    evaluate({k:attribute_and_friendship_clusters[k] for k in data.trainingMap})
+    evaluate({k:weighted_attribute_and_friendship_clusters[k] for k in data.trainingMap})
 
     printMetricCommand(real_training_data, kmeans_attrs)
     printMetricCommand(real_training_data, kmeans_attrs_friends)

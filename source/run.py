@@ -31,7 +31,7 @@ import similarityCalculator
 #
 #     f.close()
 
-def _convert_kmeans_format(clusters):
+def convert_to_output_format(clusters):
     clusters_formatted = {}
     for original_person in clusters:
         circles = []
@@ -67,17 +67,19 @@ if __name__ == '__main__':
 
     SimilarityCalc = similarityCalculator.SimilarityCalculator(len(data.featureList))
 
-    attribute_and_friendship_clusters = {}
+    training_clusters = {}
     k_means = KMeans(data.persons, SimilarityCalc.similarity_weighted_attributes_friendship)
+
     for personID in data.originalPeople:
         friends_of_person = data.persons.getPerson(personID).getFriends()
+        #approximate number of centers
         k = int(sqrt(len(friends_of_person))) + 1
         clusters = k_means.computeClusters(friends_of_person, k, 3.5)
-        attribute_and_friendship_clusters[personID] = clusters
+        training_clusters[personID] = clusters
 
-    attribute_and_friendship_clusters = _convert_kmeans_format(attribute_and_friendship_clusters)
+    training_clusters = convert_to_output_format(training_clusters)
 
-    evaluate({k:attribute_and_friendship_clusters[k] for k in data.trainingDict})
+    evaluate({k:training_clusters[k] for k in data.trainingDict})
 
     testingPeople = [origPerson for origPerson in data.originalPeople if origPerson
             not in trainingPeople]

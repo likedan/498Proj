@@ -5,7 +5,7 @@ class SimilarityCalculator(object):
        
     def similarity_weighted_attributes_friendship( self, persons, friend1ID, friend2ID ):
         FRIENDSHIP_WEIGHT = 2.5
-        similarity = 0
+        similarity = 0.0
         
         friend1 = persons.getPerson(friend1ID)
         friend2 = persons.getPerson(friend2ID)
@@ -14,10 +14,10 @@ class SimilarityCalculator(object):
             friend1Value = friend1.getFeature(key)
             friend2Value = friend2.getFeature(key)
             if friend1Value == friend2Value:
-                similarity += 1
+                similarity += 1.0
                 
         #normalize
-        similarity = (similarity/self.featureCount)*10
+        similarity = (similarity/float(self.featureCount))*10
         
         #consider friendship 
         if friend1.isFriend(friend2ID):

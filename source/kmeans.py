@@ -101,9 +101,6 @@ class KMeans(object):
                     clusters[centroid].remove(friend_to_remove)
      
         return clusters
-    
-    def setSimilarityCalculator(self, similarity_calculator):
-        self._similarity_calculator = similarity_calculator
         
     def computeClusters(self, data_points, k, similarity_diff_threshold, max_iterations=20):
         data_points_list = list(data_points)

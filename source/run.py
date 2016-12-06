@@ -27,7 +27,6 @@ def writeSubmission(filename, circleMap, test=False):
                 line += friend + ' '
             line += ';'
 
-
         line += '\n'
         f.write(line)
 
@@ -45,12 +44,6 @@ def _compute_k_means_clusters(data, similarity_calculator, similarity_diff_thres
         clusters = k_means.computeClusters(friends_of_person, k, similarity_diff_threshold)
         computed_clusters[personID] = clusters
     return computed_clusters
-
-def k_means_clustering(data, featureCount):
-    SimilarityCalc = similarityCalculator.SimilarityCalculator(featureCount)
-    attribute_and_friendship_clusters = _compute_k_means_clusters(data, SimilarityCalc.similarity_weighted_attributes_friendship, 3.5)
-
-    return attribute_and_friendship_clusters
 
 def _convert_kmeans_format(clusters):
     clusters_formatted = {}
@@ -73,8 +66,6 @@ def evaluate(result):
                 result_arr = result.split(" ")
                 person_network.append(result_arr[1:])
         evaluate_obj = Evaluation(person_network, data)
-        #print person
-        #print evaluate_obj.get_score()
         total += evaluate_obj.get_score()
     print total / float(len(result))
 
@@ -88,14 +79,15 @@ if __name__ == '__main__':
     for key in data.trainingMap:
         trainingPeople.append(key)
 
-    # List of the Kaggle submission people.
-    kagglePeople = [origPerson for origPerson in data.originalPeople if origPerson
-            not in trainingPeople]
+    SimilarityCalc = similarityCalculator.SimilarityCalculator(len(data.featureList))
+    attribute_and_friendship_clusters = _compute_k_means_clusters(data, SimilarityCalc.similarity_weighted_attributes_friendship, 3.5)
 
-    attribute_and_friendship_clusters = k_means_clustering(data, len(data.featureList))
     attribute_and_friendship_clusters = _convert_kmeans_format(attribute_and_friendship_clusters)
 
     evaluate({k:attribute_and_friendship_clusters[k] for k in data.trainingMap})
+
+    testingPeople = [origPerson for origPerson in data.originalPeople if origPerson
+            not in trainingPeople]
     # writeSubmission(real_training_data, data.trainingMap)
     #
     #

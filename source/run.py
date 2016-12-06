@@ -97,13 +97,6 @@ def loadFeatures(filename, persons = None):
                 persons.getPerson(currentPerson).addFeature(key, value)
     return featureMap
 
-
-"""
-Input is a file name whose content is a list of all possible features, with one
-feature per line.
-
-Ouput is a list containing all the features.
-"""
 def loadFeatureList(filename, featureweight_filename):
     featureList = []
     feature_Wlist = {}
@@ -200,8 +193,8 @@ if __name__ == '__main__':
     # Input data locations.
     EGONET_DIR = 'egonets'
     TRAINING_DIR = 'training'
-    FEATURE_FILE = 'features/features.txt'
-    FEATURE_LIST_FILE = 'features/featureList.txt'
+    FEATURE_FILE = 'features.txt'
+    FEATURE_LIST_FILE = 'featureList.txt'
     FEATURE_WEIGHT_FILE = "feature_weights.txt"
 
     print 'Loading input data.'

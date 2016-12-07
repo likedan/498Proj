@@ -1,24 +1,23 @@
-from userData import Persons
 import collections
 import os
 
 class DataStructure:
     def __init__(self):
-        self.friendsDict, self.originalPeople, self.persons = self.loadEgoNets('egonets')
-        self.featuresDict = self.loadFeatures('features.txt', self.persons)
+        self.friendsDict, self.originalPeople, self.people = self.loadEgoNets('egonets')
+        self.featuresDict = self.loadFeatures('features.txt', self.people)
         self.featureList = self.loadFeatureList('featureList.txt')
         self.trainingDict = self.loadTrainingData('training')
 
     def loadEgoNets(self, directory):
         friendMap = collections.defaultdict(set)
         originalPeople = []
-        persons = Persons()
+        persons = People()
 
         for egonetFile in os.listdir(directory):
 
             currentPerson = egonetFile[:egonetFile.find('.')]
             originalPeople.append(currentPerson)
-            persons.addOriginalPerson(currentPerson)
+            persons.originalPeople.append(currentPerson)
 
             egonetFilePath = os.path.join(directory, egonetFile)
 
@@ -69,7 +68,7 @@ class DataStructure:
                 value = part[part.rfind(';') + 1:]
                 featureMap[currentPerson][key] = value
                 if persons != None:
-                    persons.getPerson(currentPerson).addFeature(key, value)
+                    persons.getPerson(currentPerson).features[key] = value
         return featureMap
 
     def loadFeatureList(self, filename):
@@ -77,3 +76,25 @@ class DataStructure:
         for line in open(filename):
             featureList.append(line.strip())
         return featureList
+
+
+class Person(object):
+    def __init__(self, personID):
+        self.personID = personID
+        self.friends = set()
+        self.features = {}
+
+    def addFriend(self, friendID):
+        return self.friends.add(friendID)
+
+
+class People(object):
+    def __init__(self):
+        self.people = {}
+        self.originalPeople = []
+
+    def getPerson(self, person_ID):
+        if person_ID not in self.people:
+            self.people[person_ID] = Person(person_ID)
+
+        return self.people[person_ID]

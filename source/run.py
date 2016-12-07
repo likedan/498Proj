@@ -68,10 +68,10 @@ if __name__ == '__main__':
     SimilarityCalc = similarityCalculator.SimilarityCalculator(len(data.featureList))
 
     training_clusters = {}
-    k_means = KMeans(data.persons, SimilarityCalc.similarity_weighted_attributes_friendship)
+    k_means = KMeans(data.people, SimilarityCalc.similarity_weighted_attributes_friendship)
 
     for personID in data.originalPeople:
-        friends_of_person = data.persons.getPerson(personID).getFriends()
+        friends_of_person = data.people.getPerson(personID).friends
         #approximate number of centers
         k = int(sqrt(len(friends_of_person))) + 1
         clusters = k_means.computeClusters(friends_of_person, k, 3.5)

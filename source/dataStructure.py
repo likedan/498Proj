@@ -8,42 +8,43 @@ class DataStructure:
         self.featureList = self.loadFeatureList('featureList.txt')
         self.trainingDict = self.loadTrainingData('training')
 
-    def loadEgoNets(self, directory):
-        friendMap = collections.defaultdict(set)
+    def loadEgoNets(self, dir):
+
+        people = People()
+        friendDict = collections.defaultdict(set)
         originalPeople = []
-        persons = People()
 
-        for egonetFile in os.listdir(directory):
+        for egonet in os.listdir(dir):
 
-            currentPerson = egonetFile[:egonetFile.find('.')]
+            currentPerson = egonet[:egonet.find('.')]
             originalPeople.append(currentPerson)
-            persons.originalPeople.append(currentPerson)
+            people.originalPeople.append(currentPerson)
 
-            egonetFilePath = os.path.join(directory, egonetFile)
+            egonetFilePath = os.path.join(dir, egonet)
 
             for line in open(egonetFilePath):
                 line = line.strip().split(':')
                 currentFriend = line[0]
 
-                friendMap[currentPerson].add(currentFriend)
-                friendMap[currentFriend].add(currentPerson)
-                persons.getPerson(currentPerson).addFriend(currentFriend)
-                persons.getPerson(currentFriend).addFriend(currentPerson)
+                friendDict[currentPerson].add(currentFriend)
+                friendDict[currentFriend].add(currentPerson)
+                people.getPerson(currentPerson).addFriend(currentFriend)
+                people.getPerson(currentFriend).addFriend(currentPerson)
 
                 friends = line[1].strip().split()
 
                 for friend in friends:
-                    friendMap[currentFriend].add(friend)
-                    friendMap[friend].add(currentFriend)
-                    persons.getPerson(currentFriend).addFriend(friend)
-                    persons.getPerson(friend).addFriend(currentFriend)
+                    friendDict[currentFriend].add(friend)
+                    friendDict[friend].add(currentFriend)
+                    people.getPerson(currentFriend).addFriend(friend)
+                    people.getPerson(friend).addFriend(currentFriend)
 
-                    friendMap[currentPerson].add(friend)
-                    friendMap[friend].add(currentPerson)
-                    persons.getPerson(currentPerson).addFriend(friend)
-                    persons.getPerson(friend).addFriend(currentPerson)
+                    friendDict[currentPerson].add(friend)
+                    friendDict[friend].add(currentPerson)
+                    people.getPerson(currentPerson).addFriend(friend)
+                    people.getPerson(friend).addFriend(currentPerson)
 
-        return friendMap, originalPeople, persons
+        return friendDict, originalPeople, people
 
     def loadTrainingData(self, directory):
         trainingMap = collections.defaultdict(list)

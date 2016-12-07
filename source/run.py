@@ -4,6 +4,7 @@ from dataStructure import *
 from math import sqrt
 import similarityCalculator
 import json
+import shutil
 
 def convert_to_output_format(clusters):
     clusters_formatted = {}
@@ -29,6 +30,24 @@ def evaluate(result):
         total += evaluate_obj.get_score()
     print total / float(len(result))
 
+def write_output(data):
+    output_result = data
+    shutil.rmtree("results")
+    os.mkdir("results")
+
+    for key, values in dict(output_result).iteritems():
+        file_name = "results/" + key + ".circles"
+        f = open(file_name, 'w+')
+        for value in values:
+            line = "circle" + value[0] + ":"
+            for id in value:
+                line += " "
+                line += id
+            line += "\n"
+            f.write(line)
+        f.close()
+
+
 if __name__ == '__main__':
 
     data = DataStructure()
@@ -49,10 +68,5 @@ if __name__ == '__main__':
     result_for_trainingset = {k:training_clusters[k] for k in data.trainingDict}
     evaluate(result_for_trainingset)
 
-    with open('trainingset_result.json', 'w+') as outfile:
-        json.dump(result_for_trainingset, outfile)
-    #evaluate the testing result
-    result_for_testing = {k:training_clusters[k] for k in data.originalPeople if k not in data.trainingDict}
-    # evaluate(result_for_trainingset)
-    # with open('testingset_result.json', 'w+') as outfile:
-    #     json.dump(result_for_testing, outfile)
+    write_output({k:training_clusters[k] for k in data.originalPeople})
+

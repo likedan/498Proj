@@ -3,11 +3,20 @@ import random
 import sys
 
 class KMeans(object):
+    """
+    K-means class that implemented from scrath
+    """
     def __init__(self, persons=None, similarity_calculator=None):
+        """
+        initialize the variables
+        """
         self._similarity_calculator = similarity_calculator
         self._persons = persons
     
     def _assignToClusters(self, data_points, centroids):
+        """
+        find the similar central person 
+        """
         clusters = defaultdict(list)
         
         #for all data points(friends in our case), findout which centroid they are most similar to
@@ -27,6 +36,9 @@ class KMeans(object):
         return clusters
                 
     def _trim_clusters(self, clusters, similarity_diff_threshold):
+        """
+        calculate the maximum and minimum similarity for clusters
+        """
         for centroid in clusters:
             #compute maximum and minimum similarity from centroid for each circle/cluster
             minimum_similarity = sys.maxint
@@ -52,6 +64,9 @@ class KMeans(object):
         return clusters
         
     def computeClusters(self, data_points, k, similarity_diff_threshold):
+        """
+        compute the communites
+        """
         data_points = list(data_points)
         centroids = []
         # choose random k points as seed
@@ -60,7 +75,6 @@ class KMeans(object):
         random.shuffle(data_points)
         for i in range(k):
             centroids.append(data_points[i])
-
         clusters = self._assignToClusters(data_points, centroids)
         
         return self._trim_clusters(clusters, similarity_diff_threshold)

@@ -1,8 +1,11 @@
 from kmeans import KMeans
 from Evaluation import *
 from Network import *
+from Laplacian import *
 from math import sqrt
 import Similarity
+import shutil
+import os
 import sys
 
 
@@ -39,34 +42,23 @@ def evaluate(result):
         total += evaluate_obj.get_score()
     print 'Accuracy: {}'.format(total / float(len(result)))
 
-# def write_file(filename, circle_list, test=False):
-#     """
-#     function to output the files, not using when testing
-#     """
-#     f = open(filename, 'w+')
-#     f.write('UserId, Predicted\n')
-#     # 
-#     for person, circles in circle_list.iteritems():
-#         line = person + ','
-#         if not test:
-#             # for circle in circles
-#             for i in range(len(circles)):
-#                 # for friends in circle
-#                 for j in range(len(circles[i])):
-#                     line += circles[i][j]
-#                     if j != len(circles[i]) - 1:
-#                         line += ' '
-#                 if i != len(circles) - 1:
-#                     line += ';'
-#         else:
-#             for friend in circles:
-#                 line += friend + ' '
-#             line += ';'
-#         line += '\n'
-#         f.write(line)
+def write_output(data):
+    output_result = data
+    if os.path.exists("results"):
+        shutil.rmtree("results")
+    os.mkdir("results")
 
-#     f.close()
-
+    for key, values in dict(output_result).iteritems():
+        file_name = "results/" + key + ".circles"
+        f = open(file_name, 'w+')
+        for value in values:
+            line = "circle" + value[0] + ":"
+            for id in value:
+                line += " "
+                line += id
+            line += "\n"
+            f.write(line)
+        f.close()
 
 
 if __name__ == '__main__':
@@ -98,25 +90,4 @@ if __name__ == '__main__':
 
     # evaluate the communities with CESNA equation 8
     evaluate({k:training_clusters[k] for k in data.training_data})
-
-    # # function for 
-    # testingPeople = [origPerson for origPerson in data.central if origPerson
-    #         not in person_training]
-    
-    # write_file(real_training_data, data.trainingMap)
-    #
-    #
-    # # Validation tests
-    # write_file(kmeans_attrs, {k:attribute_clusters[k] for k in data.trainingMap})
-    # write_file(kmeans_attrs_friends, {k:attribute_and_friendship_clusters[k] for k in data.trainingMap})
-    # write_file(kmeans_weighted_attrs_friends, {k:weighted_attribute_and_friendship_clusters[k] for k in data.trainingMap})
-    # # Kaggle submissions
-    # write_file(kmeans_kaggle_attrs, {k:attribute_clusters[k] for k in
-    #     data.central if k not in data.trainingMap})
-    # write_file(kmeans_kaggle_attrs_friends,
-    #         {k:attribute_and_friendship_clusters[k] for k in
-    #             data.central if k not in data.trainingMap})
-    #
-    # write_file(kmeans_kaggle_weighted_attrs_friends,
-    #         {k:weighted_attribute_and_friendship_clusters[k] for k in
-    #             data.central if k not in data.trainingMap})
+    write_output({k:training_clusters[k] for k in data.central})

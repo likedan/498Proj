@@ -1,8 +1,15 @@
-Dependency:
 
-igraph
-sklearn
+CS498HS: Information & Social Network
+Fall 2016
+Final Project
 
-# Usage
+Group: Kedan Li, Bangqi Wang
 
-Run python run.py
+Running:
+	- run:
+		- cd source
+		- python run.py testing
+	
+	- outputs in source/results folder
+
+

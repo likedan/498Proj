@@ -1,7 +1,7 @@
 from kmeans import KMeans
 from Evaluation import *
 from Network import *
-from Laplacian import *
+from Weight import *
 from math import sqrt
 import Similarity
 import shutil
@@ -43,6 +43,7 @@ def evaluate(result):
     print 'Accuracy: {}'.format(total / float(len(result)))
 
 def write_output(data):
+    print 'Outputs in source/results/...'
     output_result = data
     if os.path.exists("results"):
         shutil.rmtree("results")
@@ -66,7 +67,7 @@ if __name__ == '__main__':
     main function for calculating communities
     """
     # construct the network structure 
-    print 'Testing data in /{} folder...'.format(TEST)
+    print 'Testing...'.format(TEST)
     data = Network(TEST)
 
     # parse all persons in training network
@@ -89,5 +90,5 @@ if __name__ == '__main__':
     training_clusters = output(training_clusters)
 
     # evaluate the communities with CESNA equation 8
-    evaluate({k:training_clusters[k] for k in data.training_data})
+    # evaluate({k:training_clusters[k] for k in data.training_data})
     write_output({k:training_clusters[k] for k in data.central})
